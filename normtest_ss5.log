@@ -1,9 +1,0 @@
-Train on 36548 samples, validate on 16392 samples
-[NORM] par composante
-language embeddings loaded.
----------------------
-zsl_accuracy increased to 79.28% on cycle  0
-checkpoint saved
----------------------
-zsl_accuracy increased to 83.19% on cycle  2
-checkpoint saved

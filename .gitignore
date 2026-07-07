@@ -1,0 +1,13 @@
+results/
+*.log
+*.time
+*.pth.tar
+*.npy
+!label_splits/*.npy
+__pycache__/
+*.pyc
+OAR.*
+/sk_feats
+/text_feats
+/sem_info
+train_ORIGINAL.py
