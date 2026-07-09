@@ -20,7 +20,7 @@ def weights_init(m):
         m.bias.data.fill_(0)
 
 class Encoder(nn.Module):
-    def __init__(self, layer_sizes, dct_enhancement=True, k=0.3, num_freq_bands=30, split_freq=30, m=1):
+    def __init__(self, layer_sizes, dct_enhancement=True, k=0.3, num_freq_bands=30, split_freq=int(__import__('os').environ.get('SPLIT_FREQ', 30)), m=1):
         super(Encoder, self).__init__()
 
         self.dct_enhancement = nn.Parameter(torch.tensor(1.0 if dct_enhancement else 0.0))
