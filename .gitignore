@@ -11,3 +11,5 @@ OAR.*
 /text_feats
 /sem_info
 train_ORIGINAL.py
+!sem_info/
+!sem_info/*.csv
