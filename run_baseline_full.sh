@@ -2,7 +2,7 @@
 source /srv/storage/stars@storage3.sophia.grid5000.fr/alakhlef/miniconda3/etc/profile.d/conda.sh
 conda activate fsvae
 unset LD_LIBRARY_PATH
-cd /srv/storage/stars@storage3.sophia.grid5000.fr/alakhlef/SK_zsl/FSVAE_clean
+cd "$(cd "$(dirname "$0")" && pwd)"
 ntu=60 st=r ve=shift le=ViT-B/32 nc=10 nepc=1700 ls=100 gpu=0 th=50 t=2 tm=lb_ad_md
 
 for ss in 5 12; do
