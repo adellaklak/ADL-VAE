@@ -16,7 +16,8 @@ parser.add_argument('--gpu', type=int, default=0, help='gpu num')
 args = parser.parse_args()
 
 
-nl = ['lb', 'ad', 'md']
+import os
+nl = os.environ.get('COMPS','lb,ad,md').split(',')
 nc = args.ntu
 save_dir = args.save_dir + f'/{args.arch}'
 
