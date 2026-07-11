@@ -165,3 +165,19 @@ Le compromis ss=5/ss=12 observé sur chaque levier isolé n'existe plus en combi
 | lbac_vg_kd | — | 77.65 | 36.85 |
 
 Toutes sous md/lbac_md. lbac_vg_kd (77.65) << lbac_md (84.88) : le discriminant dégrade.
+
+## Descriptions contrastives ciblées (cvg)
+
+| config | ss=5 | ss=12 |
+|---|---|---|
+| lbac_md_bdavg | 85.47 | 51.22 |
+| lbac_md_bdavg_cvg | 85.10 | 56.70 |
+| lbac_md_bdavg_diff | 85.10 | 47.68 |
+| cvg seul | 79.06 | 50.58 |
+
+cvg (descriptions contrastives ciblant les paires confuses) apporte +5.5 sur ss=12
+pour -0.37 sur ss=5, SANS modifier la loss. Proche de hinge+lbac_md_bdavg (57.06).
+Contrairement aux discriminantes globales (vg/kd qui dégradent), cvg désambiguïse
+explicitement les classes proches ("distinguishing it from eating..."). 
+diff (autre contrastive) dégrade ss=12 (-3.5) : toutes les contrastives ne se valent pas.
+Deux voies vers ~57 : hinge+lbac_md_bdavg (loss) OU lbac_md_bdavg_cvg (descriptions seules).
