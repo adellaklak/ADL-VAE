@@ -181,3 +181,16 @@ Contrairement aux discriminantes globales (vg/kd qui dégradent), cvg désambigu
 explicitement les classes proches ("distinguishing it from eating..."). 
 diff (autre contrastive) dégrade ss=12 (-3.5) : toutes les contrastives ne se valent pas.
 Deux voies vers ~57 : hinge+lbac_md_bdavg (loss) OU lbac_md_bdavg_cvg (descriptions seules).
+
+## Multi-seed de hinge+lbac_md_bdavg (robustesse)
+
+| seed | baseline ss=12 | combo ss=12 | Δ | baseline ss=5 | combo ss=5 | Δ |
+|---|---|---|---|---|---|---|
+| 1 | 38.78 | 53.27 | +14.5 | 83.04 | 82.96 | -0.1 |
+| 2 | 44.07 | 43.98 | -0.1 | 82.52 | 82.45 | -0.1 |
+| 5 | 48.6 | 57.06 | +8.5 | 84.44 | 86.14 | +1.7 |
+
+Gain ss=12 réel mais très variable (+14.5 / -0.1 / +8.5). Seed 2 = tirage où
+ni hinge ni descriptions n'accrochent (déjà observé pour hinge seul : +0.06 sur seed 2).
+Le résultat principal (86.14/57.06) est seed 5 = meilleur tirage, à annoncer comme tel.
+Variance inter-seed ss=12 énorme (baseline : 38.78 à 48.6), à documenter en annexe.
