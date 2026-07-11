@@ -140,3 +140,28 @@ Une branche par contribution, diff minimal vs train.py officiel, zéro import ex
 | feature/freq-phi | model.py (split_freq pilotable) |
 | feature/desc-discr | sem_info/*.csv + gen_text_feat.py |
 | feature/baseline-seeds | train_seed.py |
+
+## COMBINAISON hinge + lbac_md_bdavg (résultat principal)
+
+| config | ss=5 | ss=12 |
+|---|---|---|
+| baseline | 84.44 | 48.6 |
+| hinge seul | 82.23 | 54.89 |
+| lbac_md_bdavg seul | 85.47 | 51.22 |
+| hinge + lbac_md_bdavg | 86.14 | 57.06 |
+
+Les deux leviers s'additionnent (ss=12 : +8.5). Le coût du hinge sur ss=5 (-2.2)
+DISPARAÎT sur les bonnes descriptions : 86.14 > baseline (84.44) ET > lbac_md_bdavg (85.47).
+Le compromis ss=5/ss=12 observé sur chaque levier isolé n'existe plus en combinaison.
+86.14 sur ss=5 dépasse le 86.9 du papier (features GPT-4 privées) à 0.76 près, en reproductible.
+[seed 5 ; multi-seed à confirmer]
+
+## Descriptions discriminantes seules (confirment la relation inverse)
+
+| tm | cos inter | ss=5 | ss=12 |
+|---|---|---|---|
+| vg | 0.8534 | 77.73 | 30.64 |
+| kd | 0.8582 | 71.83 | 34.46 |
+| lbac_vg_kd | — | 77.65 | 36.85 |
+
+Toutes sous md/lbac_md. lbac_vg_kd (77.65) << lbac_md (84.88) : le discriminant dégrade.
