@@ -194,3 +194,22 @@ Gain ss=12 réel mais très variable (+14.5 / -0.1 / +8.5). Seed 2 = tirage où
 ni hinge ni descriptions n'accrochent (déjà observé pour hinge seul : +0.06 sur seed 2).
 Le résultat principal (86.14/57.06) est seed 5 = meilleur tirage, à annoncer comme tel.
 Variance inter-seed ss=12 énorme (baseline : 38.78 à 48.6), à documenter en annexe.
+
+## COMBO A 3 : hinge + lbac_md_bdavg_cvg
+
+| config | ss=5 | ss=12 |
+|---|---|---|
+| hinge+lbac_md_bdavg | 86.14 | 57.06 |
+| hinge+lbac_md_bdavg_cvg | 84.14 | **61.41** |
+
+ss=12 : +12.8 sur baseline. Les 3 leviers (hinge + bdavg + cvg contrastif) s empilent sur ss=12.
+Cout : ss=5 revient au niveau baseline (84.14). Deux configs finales : equilibree (hinge+lbac_md_bdavg 86.14/57.06) ou ss=12-max (hinge+lbac_md_bdavg_cvg 84.14/61.41).
+
+## H reel (gating) hinge+lbac_md_bdavg
+
+| split | H | seen | unseen | baseline H |
+|---|---|---|---|---|
+| ss=5 | 70.03 | 70.83 | 69.25 | 63.97 |
+| ss=12 | 52.26 | 56.32 | 48.75 | 47.10 |
+
+Gain H : +6.1 / +5.2. Le seen accuracy bondit (56.66 -> 70.83 sur ss=5) : la config debloque le gating.
