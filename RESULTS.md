@@ -213,3 +213,12 @@ Cout : ss=5 revient au niveau baseline (84.14). Deux configs finales : equilibre
 | ss=12 | 52.26 | 56.32 | 48.75 | 47.10 |
 
 Gain H : +6.1 / +5.2. Le seen accuracy bondit (56.66 -> 70.83 sur ss=5) : la config debloque le gating.
+
+## H reel combo a 3 (hinge+lbac_md_bdavg_cvg)
+
+| split | H | seen | unseen |
+|---|---|---|---|
+| ss=5 | 70.67 | 68.93 | 72.49 |
+| ss=12 | 54.14 | 56.73 | 51.77 |
+
+Meilleure config sur ss=12 en ZSL (61.41) ET en H (54.14, +7.0 vs baseline).
