@@ -145,3 +145,44 @@ def triplet_loss(latent_mean, target, device, margin = 0.1):
     loss = torch.mean(torch.sum(fin_score, axis=1))
 
     return loss
+# ============================================================
+# Text-to-motion augmentation (flow matching, style MotionGPT3) + contrastif
+# ============================================================
+class FlowGenerator(nn.Module):
+    def __init__(self, text_dim, latent_size, hidden=512):
+        super(FlowGenerator, self).__init__()
+        self.latent_size = latent_size
+        self.net = nn.Sequential(
+            nn.Linear(latent_size + 1 + text_dim, hidden), nn.ReLU(),
+            nn.Linear(hidden, hidden), nn.ReLU(),
+            nn.Linear(hidden, latent_size)
+        )
+        self.apply(weights_init)
+
+    def velocity(self, z_t, t, c):
+        return self.net(torch.cat([z_t, t, c], dim=-1))
+
+    def flow_matching_loss(self, z1, c):
+        z0 = torch.randn_like(z1)
+        t = torch.rand(z1.shape[0], 1, device=z1.device)
+        z_t = (1 - t) * z0 + t * z1
+        target_v = z1 - z0
+        pred_v = self.velocity(z_t, t, c)
+        return torch.mean((pred_v - target_v) ** 2)
+
+    def sample(self, c, steps=15):
+        B = c.shape[0]
+        z = torch.randn(B, self.latent_size, device=c.device)
+        dt = 1.0 / steps
+        for i in range(steps):
+            t = torch.full((B, 1), i * dt, device=c.device)
+            z = z + self.velocity(z, t, c) * dt
+        return z
+
+
+def info_nce(z_gen, z_pos, temperature=0.1):
+    z_gen = F.normalize(z_gen, dim=-1)
+    z_pos = F.normalize(z_pos, dim=-1)
+    logits = z_gen @ z_pos.T / temperature
+    labels = torch.arange(z_gen.shape[0], device=z_gen.device)
+    return F.cross_entropy(logits, labels)

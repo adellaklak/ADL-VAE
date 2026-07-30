@@ -1,0 +1,23 @@
+Train on 31882 samples, validate on 16392 samples
+language embeddings loaded.
+--- Etape 1: entrainement FlowGenerator (texte -> latent squelette gele) ---
+[flow] epoch 0 fm_loss 1.1122 nce_loss 4.7449
+[flow] epoch 500 fm_loss 1.0258 nce_loss 2.2469
+[flow] epoch 1000 fm_loss 0.8800 nce_loss 1.8708
+[flow] epoch 1500 fm_loss 0.6613 nce_loss 1.5254
+[flow] epoch 2000 fm_loss 0.4753 nce_loss 1.2876
+[flow] epoch 2500 fm_loss 0.4093 nce_loss 1.1906
+[flow] epoch 3000 fm_loss 0.4033 nce_loss 1.2019
+[flow] epoch 3500 fm_loss 0.2979 nce_loss 1.0268
+[flow] epoch 4000 fm_loss 0.3650 nce_loss 1.1869
+[flow] epoch 4500 fm_loss 0.3386 nce_loss 1.1283
+--- Etape 2: generation de latents synthetiques unseen ---
+--- Etape 3: classifieur UNIFIE (60 classes, seen reels + unseen synthetiques) ---
+[cls] epoch 0 loss 4.1115 batch_acc 0.39%
+[cls] epoch 500 loss 1.6234 batch_acc 76.17%
+[cls] epoch 1000 loss 1.4118 batch_acc 74.22%
+[cls] epoch 1500 loss 1.6338 batch_acc 66.02%
+[cls] epoch 2000 loss 1.1522 batch_acc 76.56%
+[cls] epoch 2500 loss 1.3817 batch_acc 70.31%
+--- Evaluation ZSL (squelettes unseen reels, classifieur unifie restreint aux unseen) ---
+zsl_accuracy increased to 44.34% on cycle final
