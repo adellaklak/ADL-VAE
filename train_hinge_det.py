@@ -44,6 +44,8 @@ parser.add_argument('--lmd', type=float, help='temperature in calibrated loss', 
 parser.add_argument('--use_cr_fact', type=int, help='use_cr_fact', default=0) #added arg
 parser.add_argument('--version', type=str, help='v', default="NA") #added arg
 parser.add_argument('--seed', type=int, default=5, help='random seed')
+parser.add_argument('--repel_lambda', type=float, default=0.3, help='poids du terme de repulsion paires confondues')
+parser.add_argument('--repel_margin', type=float, default=1.0, help='marge cible pour la repulsion')
 parser.add_argument('--margin', type=float, default=2.0, help='marge du hinge texte')
 parser.add_argument('--use_pw', type=int, default=0, help='1=ponderation EMA latente, 0=hinge asym seul')
 args = parser.parse_args()
@@ -115,6 +117,12 @@ seen_text_emb = text_emb[seen_inds, :]
 
 # [HINGE-PW] centroides latents des classes seen (EMA)
 latent_centroids = {int(c): torch.zeros(latent_size).to(device) for c in seen_inds}
+
+# [REPEL] paires confondues diagnostiquees empiriquement cette session
+# (eval_prototype_distances.py + eval_cluster_cohesion.py, cf. passation)
+HARD_PAIRS_UNSEEN_SEEN = [(15,16),(9,33),(51,49),(56,52),(3,36),(40,35),(42,41),(12,10)]
+HARD_PAIRS_UNSEEN_UNSEEN = [(58,59)]
+unseen_idx_map = {int(c): i for i, c in enumerate(unseen_inds)}
 latent_momentum = 0.99
 print("language embeddings loaded.")
 
@@ -288,6 +296,26 @@ def train_one_cycle(cycle_num, cycle_length): # 0-10, 1700
         loss += s_recons + t_recons 
         loss -= k_fact*(s_kld) + k_fact2*(t_kld)
         #loss += cr_fact*(s_crecons) + cr_fact*(t_crecons)
+
+        # [REPEL] pousse le prototype texte unseen loin du centroide squelette
+        # seen concurrent (grad uniquement cote texte, centroide detache) ;
+        # pour 58<->59 (seule paire unseen-unseen), repulsion texte<->texte.
+        repel_loss = torch.tensor(0.0, device=device)
+        n_repel_terms = 0
+        u_tmu_live, _ = text_encoder(unseen_text_emb.to(device).float())
+        for c_unseen, c_seen in HARD_PAIRS_UNSEEN_SEEN:
+            if c_seen in latent_centroids and latent_centroids[c_seen].norm() > 0:
+                u_idx = unseen_idx_map[c_unseen]
+                dist = torch.norm(u_tmu_live[u_idx] - latent_centroids[c_seen])
+                repel_loss = repel_loss + torch.clamp(args.repel_margin - dist, min=0)
+                n_repel_terms += 1
+        for c1, c2 in HARD_PAIRS_UNSEEN_UNSEEN:
+            i1, i2 = unseen_idx_map[c1], unseen_idx_map[c2]
+            dist = torch.norm(u_tmu_live[i1] - u_tmu_live[i2])
+            repel_loss = repel_loss + torch.clamp(args.repel_margin - dist, min=0)
+            n_repel_terms += 1
+        if n_repel_terms > 0:
+            loss = loss + args.repel_lambda * (repel_loss / n_repel_terms)
 
         optimizer.zero_grad()
         loss.backward()
