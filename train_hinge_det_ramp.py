@@ -319,7 +319,10 @@ def train_one_cycle(cycle_num, cycle_length): # 0-10, 1700
                 repel_loss = repel_loss + torch.clamp(args.repel_margin - dist, min=0)
                 n_repel_terms += 1
         if n_repel_terms > 0:
-            loss = loss + args.repel_lambda * (repel_loss / n_repel_terms)
+            # poids progressif, meme logique que k_fact/k_fact2/cr_fact existants :
+            # 0 jusqu'a epoch 1000 du cycle, monte jusqu'a repel_lambda sur 3000 epochs
+            repel_ramp = max(0.0, min(1.0, (epoch - (s_epoch + 1000)) / 3000))
+            loss = loss + args.repel_lambda * repel_ramp * (repel_loss / n_repel_terms)
 
         optimizer.zero_grad()
         loss.backward()
