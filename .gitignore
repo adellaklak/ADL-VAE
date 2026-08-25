@@ -11,3 +11,4 @@ OAR.*
 /text_feats
 /sem_info
 train_ORIGINAL.py
+synthetic_stock/
